@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Service } from './service.model';
 import { ServiceCreate } from './dto/create';
@@ -22,5 +22,15 @@ export class ServicesService {
 
   async create(dto: ServiceCreate) {
     return await this.repository.create(dto);
+  }
+
+  async delete(id: number) {
+    const service = await this.repository.findByPk(id);
+    if (!service) {
+      throw new HttpException('No such service', HttpStatus.NOT_FOUND);
+    }
+
+    await this.repository.destroy({ where: { id } });
+    return await this.get();
   }
 }

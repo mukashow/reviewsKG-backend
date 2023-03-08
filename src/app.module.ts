@@ -9,6 +9,9 @@ import { UserService } from './users/user-service.model';
 import { AuthModule } from './auth/auth.module';
 import { ServicesModule } from './services/service.module';
 import { Service } from './services/service.model';
+import { ReviewsModule } from './reviews/reviews.module';
+import { Review } from './reviews/reviews.model';
+import { ReviewService } from './reviews/review-service.model';
 
 @Module({
   controllers: [],
@@ -31,6 +34,7 @@ import { Service } from './services/service.model';
     UsersModule,
     AuthModule,
     ServicesModule,
+    // ReviewsModule,
   ],
 })
 export class AppModule {}

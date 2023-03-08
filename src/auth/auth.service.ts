@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { UserCreate } from './dto/user-create';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/users.model';
+import { AuthResponse } from './dto/auth-response';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,7 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  private async generateToken({ phone, id }: User) {
+  private generateToken({ phone, id }: User): AuthResponse {
     return {
       access: this.jwtService.sign({ phone, id }, { expiresIn: '5h' }),
       refresh: this.jwtService.sign({ phone, id }, { expiresIn: '90d' }),
