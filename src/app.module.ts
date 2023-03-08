@@ -25,7 +25,7 @@ import { ReviewService } from './reviews/review-service.model';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Service, UserService],
+      models: [User, Service, UserService, Review, ReviewService],
       autoLoadModels: true,
     }),
     ServeStaticModule.forRoot({
@@ -34,7 +34,7 @@ import { ReviewService } from './reviews/review-service.model';
     UsersModule,
     AuthModule,
     ServicesModule,
-    // ReviewsModule,
+    ReviewsModule,
   ],
 })
 export class AppModule {}

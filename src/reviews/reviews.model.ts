@@ -2,19 +2,17 @@ import {
   BelongsToMany,
   Column,
   DataType,
+  ForeignKey,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { Service } from '../services/service.model';
 import { ReviewService } from './review-service.model';
-
-interface CreationAttrs {
-  name: string;
-}
+import { User } from '../users/users.model';
 
 @Table({ tableName: 'reviews' })
-export class Review extends Model<Review, CreationAttrs> {
+export class Review extends Model<Review> {
   @ApiProperty({ example: 1 })
   @Column({
     type: DataType.INTEGER,
@@ -28,16 +26,17 @@ export class Review extends Model<Review, CreationAttrs> {
   @Column({ type: DataType.STRING, allowNull: false })
   author: string;
 
+  @ForeignKey(() => User)
   @ApiProperty({ example: '+996500500500' })
   @Column({ type: DataType.STRING, allowNull: false })
-  phone: string;
+  serviceProviderPhone: string;
 
   @ApiProperty({ example: 'Good service' })
   @Column({ type: DataType.STRING, allowNull: false })
   review: string;
 
   @ApiProperty({ example: 4 })
-  @Column({ type: DataType.NUMBER })
+  @Column({ type: DataType.INTEGER })
   rating: number;
 
   @ApiProperty({ example: [{ id: 1, title: 'Авто' }] })

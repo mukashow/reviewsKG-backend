@@ -22,10 +22,12 @@ export class UsersService {
 
   async getServices(id: number) {
     return (
-      await this.repository.findByPk(id, {
-        include: { model: Service, through: { attributes: [] } },
-      })
-    ).services;
+      (
+        await this.repository.findByPk(id, {
+          include: { model: Service, through: { attributes: [] } },
+        })
+      )?.services || []
+    );
   }
 
   async addService(userId: number, serviceId: number) {

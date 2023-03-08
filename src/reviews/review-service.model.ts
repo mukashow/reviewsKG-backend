@@ -1,9 +1,9 @@
 import {
   Column,
-  DataType,
-  ForeignKey,
   Model,
   Table,
+  ForeignKey,
+  DataType,
 } from 'sequelize-typescript';
 import { Review } from './reviews.model';
 import { Service } from '../services/service.model';

@@ -8,8 +8,8 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../users/users.model';
 import { UserService } from '../users/user-service.model';
-// import { Review } from '../reviews/reviews.model';
-// import { ReviewService } from '../reviews/review-service.model';
+import { Review } from '../reviews/reviews.model';
+import { ReviewService } from '../reviews/review-service.model';
 
 interface CreationAttrs {
   title: string;
@@ -33,6 +33,6 @@ export class Service extends Model<Service, CreationAttrs> {
   @BelongsToMany(() => User, () => UserService)
   users: User[];
 
-  // @BelongsToMany(() => Review, () => ReviewService)
-  // reviews: Review[];
+  @BelongsToMany(() => Review, () => ReviewService)
+  reviews: Review[];
 }
