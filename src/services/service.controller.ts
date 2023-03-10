@@ -20,7 +20,7 @@ import { ServiceCRUDQuery } from './dto/service-crud-query';
 export class ServiceController {
   constructor(private service: ServicesService) {}
 
-  @Get('')
+  @Get()
   async getAll() {
     return this.service.get();
   }

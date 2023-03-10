@@ -1,12 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Service } from '../../services/service.model';
 
-export class AuthResponse {
-  @ApiProperty({ example: 'access token' })
-  access: string;
-
-  @ApiProperty({ example: 'refresh token' })
-  refresh: string;
+export class UserGetResponse {
+  @ApiProperty({ example: 1 })
+  id: number;
 
   @ApiProperty({ example: '+996500500500' })
   phone: string;

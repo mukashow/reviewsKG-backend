@@ -6,18 +6,37 @@ import {
   Post,
   Param,
   Delete,
+  Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth-guard';
 import { ServiceResponse } from '../services/dto/service-response';
 import { ServiceCRUDQuery } from '../services/dto/service-crud-query';
+import { UserGetResponse } from './dto/user-get-response';
+import { UserQuery } from './dto/user-query';
+import { UserSearch } from './dto/user-search';
 
 @ApiTags('Пользователи')
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
+  @ApiResponse({ type: UserGetResponse })
+  @Get(':phone')
+  async getUserByPhone(@Param() { phone }: UserQuery) {
+    return await this.usersService.getUserByPhone(phone);
+  }
+
+  @ApiResponse({ type: [UserGetResponse] })
+  @Get('search/users')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async searchUsersByPhone(@Query() { q, service }: UserSearch) {
+    return await this.usersService.searchUsersByPhone(q, service);
+  }
 
   @ApiResponse({ type: [ServiceResponse] })
   @Get('services')

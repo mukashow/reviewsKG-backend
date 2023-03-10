@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './users.model';
 import { Service } from '../services/service.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -11,8 +12,31 @@ export class UsersService {
   ) {}
 
   async getUserByPhone(phone: string) {
-    return this.repository.findOne({
+    return await this.repository.findOne({
       where: { phone },
+      include: { model: Service, through: { attributes: [] } },
+    });
+  }
+
+  async searchUsersByPhone(phone: string, serviceId?: number) {
+    const include: any = {
+      model: Service,
+      through: {
+        attributes: [],
+      },
+    };
+    const users = await this.repository.findAll({
+      where: {
+        phone: { [Op.like]: `%${phone}%` },
+      },
+      include: { ...include, where: serviceId ? { id: serviceId } : undefined },
+    });
+
+    return await this.repository.findAll({
+      where: {
+        id: { [Op.in]: users.map(user => user.id) },
+      },
+      include: include,
     });
   }
 

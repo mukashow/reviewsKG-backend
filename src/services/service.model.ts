@@ -5,7 +5,6 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../users/users.model';
 import { UserService } from '../users/user-service.model';
 import { Review } from '../reviews/reviews.model';
@@ -17,7 +16,6 @@ interface CreationAttrs {
 
 @Table({ tableName: 'services' })
 export class Service extends Model<Service, CreationAttrs> {
-  @ApiProperty({ example: 1 })
   @Column({
     type: DataType.INTEGER,
     unique: true,
@@ -26,7 +24,6 @@ export class Service extends Model<Service, CreationAttrs> {
   })
   id: number;
 
-  @ApiProperty({ example: 'Auto' })
   @Column({ type: DataType.STRING, unique: true, allowNull: false })
   title: string;
 

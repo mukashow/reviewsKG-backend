@@ -1,11 +1,5 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 import { UserCreate } from './dto/user-create';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/users.model';
@@ -26,46 +20,19 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  private generateToken({ phone, id }: User): AuthResponse {
+  private generateToken({ phone, id, services }: User): AuthResponse {
     return {
-      access: this.jwtService.sign({ phone, id }, { expiresIn: '5h' }),
-      refresh: this.jwtService.sign({ phone, id }, { expiresIn: '90d' }),
+      access: this.jwtService.sign({ phone, id, services }),
+      refresh: this.jwtService.sign(
+        { phone, id, services },
+        { expiresIn: '180d' }
+      ),
       phone,
+      services,
     };
   }
-  // async login({ email, password }: UserCreate) {
-  //   const user = await this.userService.getByEmail(email);
-  //   if (!user) {
-  //     throw new HttpException(
-  //       'no such email registered',
-  //       HttpStatus.BAD_REQUEST
-  //     );
-  //   }
-  //
-  //   const passwordEqual = await bcrypt.compare(password, user.password);
-  //   if (!passwordEqual) {
-  //     throw new UnauthorizedException({ message: 'wrong credentials' });
-  //   }
-  //
-  //   return this.generateToken(user);
-  // }
 
-  // async registration({ email, password }: UserCreate) {
-  //   const candidate = await this.userService.getByEmail(email);
-  //
-  //   if (candidate) {
-  //     throw new HttpException(
-  //       'this email is already exist',
-  //       HttpStatus.BAD_REQUEST
-  //     );
-  //   }
-  //
-  //   const hashPassword = await bcrypt.hash(password, 5);
-  //   const user = await this.userService.create({
-  //     email,
-  //     password: hashPassword,
-  //   });
-  //   return this.generateToken(user);
-  // }
-  //
+  async refresh(user) {
+    return this.generateToken(user);
+  }
 }

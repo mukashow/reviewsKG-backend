@@ -1,8 +1,9 @@
 import { Transform } from 'class-transformer';
-import { IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class ServiceCRUDQuery {
   @Transform(({ value }) => Number(value))
   @IsNumber()
+  @IsNotEmpty()
   id: number;
 }
