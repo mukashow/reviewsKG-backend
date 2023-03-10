@@ -18,7 +18,7 @@ const start = async () => {
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(PORT, () => {
-    console.log('start on ' + PORT);
+    console.log('start on' + PORT);
   });
 };
 
