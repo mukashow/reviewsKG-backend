@@ -1,7 +1,12 @@
 import * as path from 'path';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { UsersModule } from './users/users.module';
 import { User } from './users/users.model';
@@ -12,10 +17,12 @@ import { Service } from './services/service.model';
 import { ReviewsModule } from './reviews/reviews.module';
 import { Review } from './reviews/reviews.model';
 import { ReviewService } from './reviews/review-service.model';
+import { PreAuthMiddleware } from './auth/auth.middleware';
+import { FirebaseApp } from './auth/firebase.service';
 
 @Module({
   controllers: [],
-  providers: [],
+  providers: [FirebaseApp],
   imports: [
     ConfigModule.forRoot({ envFilePath: `.${process.env.NODE_ENV}.env` }),
     SequelizeModule.forRoot({
@@ -37,4 +44,11 @@ import { ReviewService } from './reviews/review-service.model';
     ReviewsModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(PreAuthMiddleware).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL,
+    });
+  }
+}

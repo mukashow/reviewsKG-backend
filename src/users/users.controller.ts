@@ -20,13 +20,13 @@ import { UserQuery } from './dto/user-query';
 import { UserSearch } from './dto/user-search';
 
 @ApiTags('Пользователи')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @ApiResponse({ type: UserGetResponse })
-  @Get(':phone')
+  @Get(':phone/info')
   async getUserByPhone(@Param() { phone }: UserQuery) {
     return await this.usersService.getUserByPhone(phone);
   }

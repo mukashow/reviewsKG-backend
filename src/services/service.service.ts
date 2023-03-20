@@ -17,10 +17,17 @@ export class ServicesService {
     };
     // const { page, size } = req.query;
     // const { limit, offset } = getPagination(page, size);
-    return this.repository.findAll();
+    return await this.repository.findAll();
   }
 
   async create(dto: ServiceCreate) {
+    const candidate = this.repository.findOne({ where: { title: dto.title } });
+    if (candidate) {
+      throw new HttpException(
+        'There is already exists service with this title',
+        HttpStatus.BAD_REQUEST
+      );
+    }
     return await this.repository.create(dto);
   }
 

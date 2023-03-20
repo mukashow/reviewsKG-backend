@@ -15,7 +15,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth-guard';
 import { ReviewQuery } from './dto/review-query';
 
 @ApiTags('Отзывы')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('reviews')
 export class ReviewsController {
   constructor(private service: ReviewsService) {}

@@ -12,12 +12,21 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
+  // async auth({ phone }: UserCreate) {
+  //   let user = await this.userService.getUserByPhone(phone);
+  //   if (!user) {
+  //     user = await this.userService.create(phone);
+  //   }
+  //   return this.generateToken(user);
+  // }
+
   async auth({ phone }: UserCreate) {
-    let user = await this.userService.getUserByPhone(phone);
+    const user = await this.userService.getUserByPhone(phone);
     if (!user) {
-      user = await this.userService.create(phone);
+      await this.userService.create(phone);
+      return await this.userService.getUserByPhone(phone);
     }
-    return this.generateToken(user);
+    return user;
   }
 
   private generateToken({ phone, id, services }: User): AuthResponse {

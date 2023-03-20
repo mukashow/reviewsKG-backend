@@ -10,10 +10,16 @@ import { JwtAuthGuard } from './jwt-auth-guard';
 export class AuthController {
   constructor(private service: AuthService) {}
 
+  // @ApiResponse({ type: AuthResponse })
+  // @Post()
+  // auth(@Body() dto: UserCreate) {
+  //   return this.service.auth(dto);
+  // }
+
   @ApiResponse({ type: AuthResponse })
   @Post()
-  auth(@Body() dto: UserCreate) {
-    return this.service.auth(dto);
+  auth(@Request() { user }) {
+    return this.service.auth({ phone: user.phone });
   }
 
   @UseGuards(JwtAuthGuard)

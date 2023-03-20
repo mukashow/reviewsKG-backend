@@ -15,7 +15,7 @@ import { ServiceResponse } from './dto/service-response';
 import { ServiceCRUDQuery } from './dto/service-crud-query';
 
 @ApiTags('Услуги')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('services')
 export class ServiceController {
   constructor(private service: ServicesService) {}
