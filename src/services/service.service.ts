@@ -21,7 +21,10 @@ export class ServicesService {
   }
 
   async create(dto: ServiceCreate) {
-    const candidate = this.repository.findOne({ where: { title: dto.title } });
+    const candidate = await this.repository.findOne({
+      where: { title: dto.title },
+    });
+
     if (candidate) {
       throw new HttpException(
         'There is already exists service with this title',
