@@ -30,8 +30,8 @@ export class ReviewCreate {
   @IsNumber()
   readonly rating: number;
 
-  @ApiProperty({ example: [2] })
+  @ApiProperty({ example: 2 })
   @IsOptional()
-  @IsNumber({}, { each: true })
-  readonly services: number[] = [];
+  @IsNumber()
+  readonly service: number;
 }

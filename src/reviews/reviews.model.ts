@@ -1,19 +1,19 @@
 import {
-  BelongsToMany,
+  BelongsTo,
   Column,
   DataType,
+  ForeignKey,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { Service } from '../services/service.model';
-import { ReviewService } from './review-service.model';
 
 interface CreationAttrs {
   author: string;
   serviceProviderPhone: string;
   review: string;
   rating: number;
-  services: number[];
+  serviceId: number;
 }
 
 @Table({ tableName: 'reviews' })
@@ -38,6 +38,10 @@ export class Review extends Model<Review, CreationAttrs> {
   @Column({ type: DataType.INTEGER })
   rating: number;
 
-  @BelongsToMany(() => Service, () => ReviewService)
-  services: Service[];
+  @ForeignKey(() => Service)
+  @Column
+  serviceId: number;
+
+  @BelongsTo(() => Service)
+  service: Service;
 }

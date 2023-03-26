@@ -2,13 +2,13 @@ import {
   BelongsToMany,
   Column,
   DataType,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { User } from '../users/users.model';
 import { UserService } from '../users/user-service.model';
 import { Review } from '../reviews/reviews.model';
-import { ReviewService } from '../reviews/review-service.model';
 
 interface CreationAttrs {
   title: string;
@@ -30,6 +30,6 @@ export class Service extends Model<Service, CreationAttrs> {
   @BelongsToMany(() => User, () => UserService)
   users: User[];
 
-  @BelongsToMany(() => Review, () => ReviewService)
+  @HasMany(() => Review)
   reviews: Review[];
 }

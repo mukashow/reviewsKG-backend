@@ -11,44 +11,45 @@ export class ReviewsService {
     @InjectModel(Service) private serviceRepository: typeof Service
   ) {}
 
-  async create({ services, ...createDto }: ReviewCreate) {
-    const checkServicePromises = services.map(
-      serviceId =>
-        new Promise<Service>(async resolve => {
-          const service = await this.serviceRepository.findByPk(serviceId, {
-            plain: true,
-          });
-          resolve(service);
-        })
-    );
-    const providedServices = await Promise.all(checkServicePromises);
-    const isServiceDoesntExists = providedServices.some(service => !service);
+  async create({ service: serviceId, ...createDto }: ReviewCreate) {
+    if (serviceId) {
+      const service = await this.serviceRepository.findByPk(serviceId, {
+        plain: true,
+      });
 
-    if (isServiceDoesntExists) {
+      if (!service) {
+        throw new HttpException(
+          'Service does not exists',
+          HttpStatus.NOT_FOUND
+        );
+      }
+    }
+
+    const review = await this.repository.create({ ...createDto, serviceId });
+    return await this.repository.findByPk(review.id, {
+      include: [Service],
+    });
+  }
+
+  async delete(id: number, author: string) {
+    const isReviewExists = await this.repository.findOne({
+      where: { id, author },
+    });
+
+    if (!isReviewExists) {
       throw new HttpException(
-        'One of service does not exists',
+        'This user does not have such review',
         HttpStatus.NOT_FOUND
       );
     }
 
-    const review = await this.repository.create(createDto);
-    const addServicePromises = providedServices.map(
-      service =>
-        new Promise<void>(async resolve => {
-          await review.$add('services', service);
-          resolve();
-        })
-    );
-    await Promise.all(addServicePromises);
-    return await this.repository.findByPk(review.id, {
-      include: { model: Service, through: { attributes: [] } },
-    });
+    await this.repository.destroy({ where: { id } });
   }
 
   async get(serviceProviderPhone: string) {
     return await this.repository.findAll({
       where: { serviceProviderPhone },
-      include: { model: Service, through: { attributes: [] } },
+      include: [Service],
     });
   }
 }

@@ -16,7 +16,6 @@ import { ServicesModule } from './services/service.module';
 import { Service } from './services/service.model';
 import { ReviewsModule } from './reviews/reviews.module';
 import { Review } from './reviews/reviews.model';
-import { ReviewService } from './reviews/review-service.model';
 import { PreAuthMiddleware } from './auth/auth.middleware';
 import { FirebaseApp } from './auth/firebase.service';
 
@@ -32,7 +31,7 @@ import { FirebaseApp } from './auth/firebase.service';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Service, UserService, Review, ReviewService],
+      models: [User, Service, UserService, Review],
       autoLoadModels: true,
     }),
     ServeStaticModule.forRoot({

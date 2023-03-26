@@ -1,18 +1,19 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
+  Request,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { ReviewCreate } from './dto/create';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth-guard';
 import { ReviewQuery } from './dto/review-query';
+import { ReviewCrudQuery } from './dto/review-crud-query';
 
 @ApiTags('Отзывы')
 // @UseGuards(JwtAuthGuard)
@@ -22,9 +23,13 @@ export class ReviewsController {
 
   @Post()
   @ApiResponse({ type: ReviewCreate })
-  @UsePipes(new ValidationPipe({ transform: true }))
   async create(@Body() dto: ReviewCreate) {
     return await this.service.create(dto);
+  }
+
+  @Delete(':id')
+  async delete(@Request() req, @Param() { id }: ReviewCrudQuery) {
+    return await this.service.delete(id, req.user.phone);
   }
 
   @Get(':phone')
