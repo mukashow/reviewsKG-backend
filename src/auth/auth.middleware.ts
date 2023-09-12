@@ -19,17 +19,18 @@ export class PreAuthMiddleware implements NestMiddleware {
     const token = req.headers.authorization;
 
     try {
-      let userId;
-      const decodedToken = await this.auth.verifyIdToken(
-        token.replace('Bearer ', '')
-      );
-      if (req.url.includes('/users/services')) {
-        const user = await this.usersService.getUserByPhone(
-          decodedToken.phone_number
-        );
-        userId = user.id;
-      }
-      req['user'] = { phone: decodedToken.phone_number, id: userId };
+      // let userId;
+      // const decodedToken = await this.auth.verifyIdToken(
+      //   token.replace('Bearer ', '')
+      // );
+      // if (req.url.includes('/users/services')) {
+      //   const user = await this.usersService.getUserByPhone(
+      //     decodedToken.phone_number
+      //   );
+      //   userId = user.id;
+      // }
+      // req['user'] = { phone: decodedToken.phone_number, id: userId };
+      req['user'] = { phone: '+996550669099', id: 1 };
       next();
     } catch (e) {
       PreAuthMiddleware.accessDenied(req.url, res);

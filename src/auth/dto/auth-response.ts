@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Service } from '../../services/service.model';
+import { Service } from '../../services/services.entity';
 
 export class AuthResponse {
   @ApiProperty({ example: 'access token' })

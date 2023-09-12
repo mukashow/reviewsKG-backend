@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Service } from '../../services/service.model';
+import { Service } from '../../services/services.entity';
 
 export class UserGetResponse {
   @ApiProperty({ example: 1 })
@@ -8,6 +8,6 @@ export class UserGetResponse {
   @ApiProperty({ example: '+996500500500' })
   phone: string;
 
-  @ApiProperty({ example: [{ id: 1, title: 'Авто' }] })
-  services: Service[];
+  @ApiProperty({ example: { id: 1, title: 'Авто' } })
+  services: Service;
 }

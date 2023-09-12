@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ServicesService } from './service.service';
+import { ServicesService } from './services.service';
 import { ServiceCreate } from './dto/create';
 import { JwtAuthGuard } from '../auth/jwt-auth-guard';
 import { ServiceResponse } from './dto/service-response';
@@ -17,7 +17,7 @@ import { ServiceCRUDQuery } from './dto/service-crud-query';
 @ApiTags('Услуги')
 // @UseGuards(JwtAuthGuard)
 @Controller('services')
-export class ServiceController {
+export class ServicesController {
   constructor(private service: ServicesService) {}
 
   @Get()

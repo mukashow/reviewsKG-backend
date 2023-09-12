@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserCreate } from './dto/user-create';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/users.model';
 import { AuthResponse } from './dto/auth-response';
+import { User } from '../users/users.entity';
 
 @Injectable()
 export class AuthService {
@@ -29,16 +29,17 @@ export class AuthService {
     return user;
   }
 
-  private generateToken({ phone, id, services }: User): AuthResponse {
-    return {
-      access: this.jwtService.sign({ phone, id, services }),
-      refresh: this.jwtService.sign(
-        { phone, id, services },
-        { expiresIn: '180d' }
-      ),
-      phone,
-      services,
-    };
+  private generateToken({ phone, id, service }: User): AuthResponse {
+    // return {
+    //   access: this.jwtService.sign({ phone, id, services }),
+    //   refresh: this.jwtService.sign(
+    //     { phone, id, services },
+    //     { expiresIn: '180d' }
+    //   ),
+    //   phone,
+    //   services,
+    // };
+    return;
   }
 
   async refresh(user) {

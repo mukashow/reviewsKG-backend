@@ -1,98 +1,38 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { User } from './users.model';
-import { Service } from '../services/service.model';
-import { Op } from 'sequelize';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './users.entity';
+import { Service } from '../services/services.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User) private repository: typeof User,
-    @InjectModel(Service) private serviceRepository: typeof Service
+    @InjectRepository(User) private repository: Repository<User>,
+    @InjectRepository(Service) private serviceRepository: Repository<Service>
   ) {}
 
   async getUserByPhone(phone: string) {
-    return await this.repository.findOne({
-      where: { phone },
-      include: { model: Service, through: { attributes: [] } },
-    });
-  }
-
-  async searchUsersByPhone(phone: string, serviceId?: number) {
-    const include: any = {
-      model: Service,
-      through: {
-        attributes: [],
-      },
-    };
-    const users = await this.repository.findAll({
-      where: {
-        phone: { [Op.like]: `%${phone}%` },
-      },
-      include: { ...include, where: serviceId ? { id: serviceId } : undefined },
-    });
-
-    return await this.repository.findAll({
-      where: {
-        id: { [Op.in]: users.map(user => user.id) },
-      },
-      include: include,
-    });
+    return await this.repository.findOneByOrFail({ phone });
   }
 
   async create(phone: string) {
-    return await this.repository.create({ phone });
+    const user = this.repository.create({ phone });
+    return await this.repository.save(user);
   }
 
-  async getServices(id: number) {
-    return (
-      (
-        await this.repository.findByPk(id, {
-          include: { model: Service, through: { attributes: [] } },
-        })
-      )?.services || []
-    );
-  }
-
-  async addService(userId: number, serviceId: number) {
-    const service = await this.serviceRepository.findByPk(serviceId);
+  async updateService(userId: number, serviceId: number) {
+    const service = await this.serviceRepository.findOneBy({ id: serviceId });
     if (!service) {
       throw new HttpException('No such service', HttpStatus.NOT_FOUND);
     }
 
-    const user = await this.repository.findByPk(userId, {
-      include: { model: Service, through: { attributes: [] } },
-      plain: true,
-    });
-    if (user.services.some(({ id }) => id === serviceId)) {
-      throw new HttpException(
-        'This service already have added',
-        HttpStatus.BAD_REQUEST
-      );
-    }
-
-    await user.$add('services', service);
-    return await this.serviceRepository.findByPk(serviceId);
+    await this.repository.update(userId, service);
+    return await this.repository.findOneBy({ id: userId });
   }
 
-  async removeService(userId: number, serviceId: number) {
-    const service = await this.serviceRepository.findByPk(serviceId);
-    if (!service) {
-      throw new HttpException('No such service', HttpStatus.NOT_FOUND);
-    }
-
-    const user = await this.repository.findByPk(userId, {
-      include: { model: Service, through: { attributes: [] } },
-      plain: true,
-    });
-    if (!user.services.some(({ id }) => id === serviceId)) {
-      throw new HttpException(
-        "This user doesn't have such service",
-        HttpStatus.NOT_FOUND
-      );
-    }
-
-    await user.$remove('services', service);
-    return await this.getServices(userId);
+  async removeService(userId: number) {
+    const user = await this.repository.findOneBy({ id: userId });
+    user.service = null;
+    return await this.repository.save(user);
   }
 }
