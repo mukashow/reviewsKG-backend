@@ -5,5 +5,5 @@ export class ServiceCRUDQuery {
   @Transform(({ value }) => Number(value))
   @IsNumber()
   @IsNotEmpty()
-  id: number;
+  readonly id: number;
 }

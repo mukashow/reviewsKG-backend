@@ -13,5 +13,6 @@ import { Service } from '../services/services.entity';
     TypeOrmModule.forFeature([Review, Service]),
     forwardRef(() => AuthModule),
   ],
+  exports: [ReviewsService],
 })
 export class ReviewsModule {}

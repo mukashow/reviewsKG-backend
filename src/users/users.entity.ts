@@ -18,4 +18,7 @@ export class User {
   @ManyToOne(() => Service)
   @JoinTable()
   service: Service;
+
+  @Column({ nullable: true })
+  description: string;
 }

@@ -4,23 +4,33 @@ import {
   UseGuards,
   Request,
   Param,
-  Delete,
   NotFoundException,
   Put,
+  Body,
+  Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth-guard';
 import { ServiceResponse } from '../services/dto/service-response';
-import { ServiceCRUDQuery } from '../services/dto/service-crud-query';
 import { UserGetResponse } from './dto/user-get-response';
 import { UserQuery } from './dto/user-query';
+import { ProfileUpdate } from './dto/profile-update';
+import { ReviewCreateDto, ReviewQueryDto } from '../reviews/dto';
+import { ReviewsService } from '../reviews/reviews.service';
+import { FindReviewRes } from '../reviews/interface';
 
 @ApiTags('Пользователи')
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
+@UsePipes(new ValidationPipe({ transform: true }))
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private reviewsService: ReviewsService
+  ) {}
 
   @ApiResponse({ type: UserGetResponse })
   @Get(':phone/info')
@@ -33,14 +43,14 @@ export class UsersController {
   }
 
   @ApiResponse({ type: ServiceResponse })
-  @Put('services/:id')
-  async updateService(@Request() req, @Param() { id }: ServiceCRUDQuery) {
-    return await this.usersService.updateService(req.user.id, Number(id));
+  @Put()
+  async updateProfile(@Request() req, @Body() dto: ProfileUpdate) {
+    return await this.usersService.updateProfile(req.user.id, dto);
   }
 
-  @ApiResponse({ type: [ServiceResponse] })
-  @Delete('services')
-  async removeService(@Request() req) {
-    return await this.usersService.removeService(req.user.id);
+  @Get('reviews')
+  @ApiResponse({ type: ReviewCreateDto })
+  async getReviews(@Query() query: ReviewQueryDto): Promise<FindReviewRes> {
+    return await this.reviewsService.get(query.phone, query);
   }
 }

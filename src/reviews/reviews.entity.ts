@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
 import { Service } from '../services/services.entity';
 
 @Entity()
@@ -15,8 +21,11 @@ export class Review {
   @Column()
   review: string;
 
-  @Column()
+  @Column({ nullable: true })
   rating: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @ManyToOne(() => Service)
   service: Service;

@@ -22,9 +22,9 @@ export class Service {
   @OneToMany(() => Review, review => review)
   reviews: Review[];
 
-  @OneToMany(() => Service, service => service)
+  @OneToMany(() => Service, service => service.parent)
   children: Service[];
 
-  @ManyToOne(() => Service, service => service)
+  @ManyToOne(() => Service, service => service.children)
   parent: Service;
 }

@@ -13,9 +13,10 @@ import { ServiceCreate } from './dto/create';
 import { JwtAuthGuard } from '../auth/jwt-auth-guard';
 import { ServiceResponse } from './dto/service-response';
 import { ServiceCRUDQuery } from './dto/service-crud-query';
+import { AddServiceToParent } from './dto/addServiceToParent';
 
 @ApiTags('Услуги')
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('services')
 export class ServicesController {
   constructor(private service: ServicesService) {}
@@ -31,9 +32,18 @@ export class ServicesController {
     return this.service.create(dto);
   }
 
+  @ApiResponse({ type: ServiceResponse })
+  @Post(':parent/add/:id')
+  async addServiceToParent(@Param() { parent, id }: AddServiceToParent) {
+    return this.service.addServiceToParent({
+      id: Number(id),
+      parent: Number(parent),
+    });
+  }
+
   @ApiResponse({ type: [ServiceResponse] })
-  @Delete(':id')
+  @Delete(':id/delete')
   async delete(@Param() { id }: ServiceCRUDQuery) {
-    return this.service.delete(id);
+    return this.service.delete(+id);
   }
 }

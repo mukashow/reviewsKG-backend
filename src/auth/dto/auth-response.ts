@@ -11,6 +11,6 @@ export class AuthResponse {
   @ApiProperty({ example: '+996500500500' })
   phone: string;
 
-  @ApiProperty({ example: [{ id: 1, title: 'Авто' }] })
-  services: Service[];
+  @ApiProperty({ example: { id: 1, title: 'Авто' } })
+  service: Service;
 }

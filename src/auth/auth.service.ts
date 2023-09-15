@@ -12,37 +12,30 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  // async auth({ phone }: UserCreate) {
-  //   let user = await this.userService.getUserByPhone(phone);
-  //   if (!user) {
-  //     user = await this.userService.create(phone);
-  //   }
-  //   return this.generateToken(user);
-  // }
-
-  async auth({ phone }: UserCreate) {
-    const user = await this.userService.getUserByPhone(phone);
+  async auth({ phone }: UserCreate): Promise<AuthResponse> {
+    let user = await this.userService.queryUserByPhone(phone);
     if (!user) {
-      await this.userService.create(phone);
-      return await this.userService.getUserByPhone(phone);
+      user = await this.userService.create(phone);
     }
-    return user;
+    return this.generateToken(user);
   }
 
   private generateToken({ phone, id, service }: User): AuthResponse {
-    // return {
-    //   access: this.jwtService.sign({ phone, id, services }),
-    //   refresh: this.jwtService.sign(
-    //     { phone, id, services },
-    //     { expiresIn: '180d' }
-    //   ),
-    //   phone,
-    //   services,
-    // };
-    return;
+    return {
+      access: this.jwtService.sign(
+        { phone, id, service },
+        { expiresIn: '15m' }
+      ),
+      refresh: this.jwtService.sign(
+        { phone, id, service },
+        { expiresIn: '180d' }
+      ),
+      phone,
+      service,
+    };
   }
 
-  async refresh(user) {
+  async refresh(user): Promise<AuthResponse> {
     return this.generateToken(user);
   }
 }
