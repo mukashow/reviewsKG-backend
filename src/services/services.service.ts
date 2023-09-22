@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ServiceCreate } from './dto/create';
 import { Service } from './services.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { AddServiceToParent } from './dto/addServiceToParent';
 
 @Injectable()
@@ -14,6 +14,7 @@ export class ServicesService {
   async get() {
     return this.repository.find({
       relations: { children: true, parent: true },
+      where: { parent: IsNull() },
     });
   }
 

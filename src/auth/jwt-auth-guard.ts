@@ -3,9 +3,11 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
+import * as process from 'process';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -18,17 +20,25 @@ export class JwtAuthGuard implements CanActivate {
 
     try {
       const authHeader = req.headers.authorization;
-      const type = authHeader.split(' ')[0];
       const token = authHeader.split(' ')[1];
 
-      if (type !== 'Bearer' || !token) {
-        throw new UnauthorizedException('not authorized');
-      }
-
+      if (!token) return true;
       req.user = this.jwtService.verify(token);
       return true;
     } catch (e) {
-      throw new UnauthorizedException('not authorized');
+      throw new UnauthorizedException('Not authorized');
     }
+  }
+}
+
+@Injectable()
+export class ApiKeyGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const req = context.switchToHttp().getRequest();
+
+    if (req.headers['x-api-key'] !== process.env.API_KEY) {
+      throw new ForbiddenException('You do not have an access');
+    }
+    return true;
   }
 }

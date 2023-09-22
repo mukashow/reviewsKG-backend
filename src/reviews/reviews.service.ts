@@ -64,10 +64,6 @@ export class ReviewsService {
     { sort, page, pageSize }: ReviewQueryDto
   ): Promise<FindReviewRes> {
     const sortKey = sort.split('_');
-    console.log(serviceProviderPhone);
-    console.log(page);
-    console.log(pageSize);
-    console.log(sort);
 
     const [result, total] = await this.repository.findAndCount({
       where: { serviceProviderPhone },

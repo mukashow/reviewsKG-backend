@@ -13,4 +13,7 @@ export class AuthResponse {
 
   @ApiProperty({ example: { id: 1, title: 'Авто' } })
   service: Service;
+
+  @ApiProperty({ example: 'i am' })
+  description: string;
 }

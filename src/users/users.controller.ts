@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { JwtAuthGuard } from '../auth/jwt-auth-guard';
+import { ApiKeyGuard, JwtAuthGuard } from '../auth/jwt-auth-guard';
 import { ServiceResponse } from '../services/dto/service-response';
 import { UserGetResponse } from './dto/user-get-response';
 import { UserQuery } from './dto/user-query';
@@ -23,7 +23,6 @@ import { ReviewsService } from '../reviews/reviews.service';
 import { FindReviewRes } from '../reviews/interface';
 
 @ApiTags('Пользователи')
-@UseGuards(JwtAuthGuard)
 @UsePipes(new ValidationPipe({ transform: true }))
 @Controller('users')
 export class UsersController {
@@ -32,6 +31,7 @@ export class UsersController {
     private reviewsService: ReviewsService
   ) {}
 
+  @UseGuards(ApiKeyGuard)
   @ApiResponse({ type: UserGetResponse })
   @Get(':phone/info')
   async getUserByPhone(@Param() { phone }: UserQuery) {
@@ -42,12 +42,14 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiResponse({ type: ServiceResponse })
   @Put()
   async updateProfile(@Request() req, @Body() dto: ProfileUpdate) {
     return await this.usersService.updateProfile(req.user.id, dto);
   }
 
+  @UseGuards(ApiKeyGuard)
   @Get('reviews')
   @ApiResponse({ type: ReviewCreateDto })
   async getReviews(@Query() query: ReviewQueryDto): Promise<FindReviewRes> {

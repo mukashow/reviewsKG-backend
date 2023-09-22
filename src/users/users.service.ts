@@ -13,11 +13,17 @@ export class UsersService {
   ) {}
 
   async getUserByPhone(phone: string): Promise<User> {
-    return await this.repository.findOneByOrFail({ phone });
+    return await this.repository.findOneOrFail({
+      where: { phone },
+      relations: { service: true },
+    });
   }
 
   async queryUserByPhone(phone: string): Promise<User> {
-    return await this.repository.findOneBy({ phone });
+    return await this.repository.findOne({
+      where: { phone },
+      relations: { service: { parent: true } },
+    });
   }
 
   async create(phone: string): Promise<User> {

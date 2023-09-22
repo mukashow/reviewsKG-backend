@@ -20,7 +20,12 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  private generateToken({ phone, id, service }: User): AuthResponse {
+  private generateToken({
+    phone,
+    id,
+    service,
+    description,
+  }: User): AuthResponse {
     return {
       access: this.jwtService.sign(
         { phone, id, service },
@@ -32,6 +37,7 @@ export class AuthService {
       ),
       phone,
       service,
+      description,
     };
   }
 
